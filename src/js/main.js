@@ -1,7 +1,10 @@
 //jquery on document loading
+var pageHeight;
+var pageWidth;
 $(function(){
-    var pageHeight;
-    var pageWidth;
+    var score = 0;
+    var defaultTimeout = 2000;
+    var timeout = 2000;
     //object holding all of the timers
     var timers={};
     //holds the count of dots
@@ -10,38 +13,32 @@ $(function(){
     var btnPress;
     //score
     var score
-    console.log("main.js loaded");
     resize();
-
     //funciton is called when the browser window is resized.
     $(window).resize(function(){
         resize();
     })
 
-    //function for getting the size of the page and positioning
-    function resize(){
-        //getting the page height and width of the window
-        pageHeight = $(window).height();
-        pageWidth = $(window).width();
-        //centering the button if the button isn't hidden
-        if(!$('#play-button').hasClass("hidden")){
-            $("#play-button").css("position","absolute");
-            $("#play-button").css({'left': pageWidth/2+'px','top': pageHeight/2+'px'});
-        }
-    };
+
     //when the play button is pressed hide it
     $("#play-button").on("click",function(){
-        $("#play-button").addClass("hidden");
+        score = 0;
+        //updating hte score back to 0
+        updateScore();
+        //setting back the default timeout
+        timeout = defaultTimeout;
+        $("#centered-div").addClass("hidden");
         btnPress = true;
         createDot();
+        $("#score-div").removeClass("hidden");
     });
 
     //function for creating a random position returned as an object
     function randomPosition()
     {
         var position ={};
-        position["left"] = Math.floor((Math.random() * pageWidth - 20 ) + 20)
-        position["top"] = Math.floor((Math.random() * pageHeight - 20) + 20)
+        position["left"] = Math.floor((Math.random() * pageWidth - 50 ) + 20)
+        position["top"] = Math.floor((Math.random() * pageHeight - 50) + 20)
         return position
     }
 
@@ -53,7 +50,7 @@ $(function(){
         // mileseconds the user loses if the timeout carrys out
         timers["dot"+dotCount]= setTimeout(function(){
             dotTimeout();
-        },3000)
+        },timeout)
         //string for the div
         var divStr = "<div class='dot'  data-dot='"+dotCount+"' style='position:absolute;left:"+
             pos["left"]+"px;top:"+pos["top"]+"px'>"
@@ -61,6 +58,13 @@ $(function(){
         $("body").append(divStr)
     }
     $("body").on("click",".dot",function(){
+        //plus one to the score
+        score+= 1;
+        //changing score number
+        updateScore();
+        // timeout =
+        timeout -= Math.floor(score / 10) * 10;
+        console.log(timeout);
         //the dot number is a attr added to the html element
         var dotNo = $(this).attr("data-dot")
         //clearing the timeout on the dot
@@ -73,14 +77,46 @@ $(function(){
 
     function dotTimeout(){
         //removing the hidden class and calling the resize method
-        $("#play-button").removeClass("hidden");
+        $("#centered-div").removeClass("hidden");
+        //hiding score
+        $("#score-div").addClass("hidden");
         //removing all of the dots
         $(".dot").remove();
+        //creating the lose text
+        var loseTxt = $("<h3/>",{text:"You have lost the game your score was " + score});
+        //prefixing it to the div
+        $("#lose-text").html(loseTxt);
         //calling the resize so the play button is still centered
         resize();
-        //creating the lose text
-        var loseTxt = $("<p/>",{text:"You have lost the game your score was "});
-        //prefixing it to the div
-        $("#body-fluid").prefix(loseTxt);
+    }
+
+    function updateScore(){
+        $("#score-div").html(score);
     }
 });
+//function for getting the size of the page and positioning
+function resize(){
+    //getting the page height and width of the window
+    pageHeight = $(window).height();
+    pageWidth = $(window).width();
+    var left;
+    var top;
+    //centering the button if the button isn't hidden
+    if(!$('#centered-div').hasClass("hidden")){
+        left = pageWidth/2;
+        top = pageHeight/2;
+        //resizing the centered div to be half of the wifth of the div
+        left = Math.floor(left - ($("#centered-div").width() / 2));
+        top = Math.floor(top - ($("#centered-div").height() / 2));
+        $("#centered-div").css("position","absolute");
+        $("#centered-div").css({'left': left +'px','top': top +'px'});
+    }
+    else{
+        left = pageWidth /2;
+        top = pageHeight/2;
+        //resizing the score
+        left = Math.floor(left -($("#score-div").width() / 2))
+        top = Math.floor(top - ($("#score-div").height() / 2));
+        $("#score-div").css({'left': left +'px'});
+    }
+};

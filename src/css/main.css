@@ -278,3 +278,14 @@ textarea {
     width: 40px;
     height:40px;
 }
+#centered-div{
+    position: absolute;
+    text-align: center;
+    width:auto;
+    left: 50%;
+}
+#score-div{
+    position: absolute;
+    left:50%;
+}
+
