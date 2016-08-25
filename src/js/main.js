@@ -1,6 +1,7 @@
 //jquery on document loading
 var pageHeight;
 var pageWidth;
+var colors = ["#CC534F","BC524E","AB4E4A","9D4D49","824141","723939","5B2D2D","3B1D1D"];
 $(function(){
     var score = 0;
     var defaultTimeout = 2000;
@@ -48,14 +49,21 @@ $(function(){
         var pos = randomPosition()
         //adding a timeout on the page for the dot so that after a certain amount of
         // mileseconds the user loses if the timeout carrys out
-        timers["dot"+dotCount]= setTimeout(function(){
+        timers["dot"+dotCount+"timeout"]= setTimeout(function(){
             dotTimeout();
         },timeout)
+        timers["dot"+dotCount+"timer"]=setInterval(function(e){
+         timerFunc(e);
+        },timeout / 8)
+        //creating the timer count so every time the timer is called then the color can change using the colours array.
+        timers["dot"+dotCount+"timerCount"]=0;
+        //create a new
         //string for the div
         var divStr = "<div class='dot'  data-dot='"+dotCount+"' style='position:absolute;left:"+
             pos["left"]+"px;top:"+pos["top"]+"px'>"
         //adding the dot div to the page
-        $("body").append(divStr)
+        $("body").append(divStr);
+        $("body")
     }
     $("body").on("click",".dot",function(){
         //plus one to the score
@@ -68,7 +76,7 @@ $(function(){
         //the dot number is a attr added to the html element
         var dotNo = $(this).attr("data-dot")
         //clearing the timeout on the dot
-        clearTimeout(timers["dot"+dotNo]);
+        clearTimeout(timers["dot"+dotNo+"timeout"]);
         //removing the dot from the dom
         $(this).remove();
         // creating a  new dot.
@@ -90,9 +98,16 @@ $(function(){
         resize();
     }
 
+    function timerFunc(e){
+        var count = timers["dot"+dotCount+"timerCount"];
+        this.css("background-color", "#"+colors[count])
+    }
+
     function updateScore(){
         $("#score-div").html(score);
     }
+    //todo create remove timers function that removes the timeout and interva from the dot count
+
 });
 //function for getting the size of the page and positioning
 function resize(){
