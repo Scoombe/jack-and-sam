@@ -1,7 +1,7 @@
 //jquery on document loading
 var pageHeight;
 var pageWidth;
-var colors = ["FF5151","F34F4F","E34E4E","DA4C4C","D44B4B","CB4848","BD4545","AE4444"];
+var colors = ["#CC534F","BC524E","AB4E4A","9D4D49","824141","723939","5B2D2D","3B1D1D"];
 $(function(){
     var score = 0;
     var defaultTimeout = 2000;
@@ -51,16 +51,19 @@ $(function(){
         // mileseconds the user loses if the timeout carrys out
         timers["dot"+dotCount+"timeout"]= setTimeout(function(){
             dotTimeout();
-        },timeout);
+        },timeout)
+        timers["dot"+dotCount+"timer"]=setInterval(function(e){
+         timerFunc(e);
+        },timeout / 8)
+        //creating the timer count so every time the timer is called then the color can change using the colours array.
         timers["dot"+dotCount+"timerCount"]=0;
         //create a new
         //string for the div
-        var divStr = "<div id='dot"+dotCount+"'class='dot'  data-dot='"+dotCount+"' style='position:absolute;left:"+
+        var divStr = "<div class='dot'  data-dot='"+dotCount+"' style='position:absolute;left:"+
             pos["left"]+"px;top:"+pos["top"]+"px'>"
         //adding the dot div to the page
-        $("body").append(divStr).animate({
-            backgroundColor:  '#000'
-        }, timeout);
+        $("body").append(divStr);
+        $("body")
     }
     $("body").on("click",".dot",function(){
         //plus one to the score
@@ -73,9 +76,7 @@ $(function(){
         //the dot number is a attr added to the html element
         var dotNo = $(this).attr("data-dot")
         //clearing the timeout on the dot
-        clearTimeout(timers["dot"+dotCount+"timeout"]);
-        clearTimeout(timers["dot"+dotCount+"timer"]);
-        timers["dot"+dotCount+"timerCount"];
+        clearTimeout(timers["dot"+dotNo+"timeout"]);
         //removing the dot from the dom
         $(this).remove();
         // creating a  new dot.
@@ -97,10 +98,9 @@ $(function(){
         resize();
     }
 
-    function timerFunc(){
+    function timerFunc(e){
         var count = timers["dot"+dotCount+"timerCount"];
-        $("#dot"+dotCount).css("background-color", "#"+colors[count])
-        timers["dot"+dotCount+"timerCount"] = count+1   ;
+        this.css("background-color", "#"+colors[count])
     }
 
     function updateScore(){
@@ -108,36 +108,6 @@ $(function(){
     }
     //todo create remove timers function that removes the timeout and interva from the dot count
 
-    //fade function
-    //step is equal to the
-    function colorFade(startColour,endColour,steps){
-        var difference;
-        var loopDifference;
-        var currentColor;
-        var start=  {RGB:      startColour,
-                     R:        ParseInt(startColour.slice(1,3),16),
-                     G:        ParseInt(startColour.slice(3,5),16),
-                     B:        ParseInt(startColour.slice(5,7),16)}
-        var end=    {RGB:      endColour,
-                     R:        ParseInt(endColour.slice(1,3),16),
-                     G:        ParseInt(endColour.slice(3,5),16),
-                     B:        ParseInt(endColour.slice(5,7),16)}
-
-        //looping through the R G and B values to the end RGB
-        for(var i = 1;i < 3;i++){
-            difference = end(i) - start(i);
-            //making sure that the step is
-            difference = (end(i) - start(i)) / steps;
-            for(var i = 1; i < steps; i++ ){
-
-            }
-        }
-        //todo for loop to go from the start colour to the end color.
-        var timer = new setTimeout(function(){
-
-        })
-        return currentColor;
-    }
 });
 //function for getting the size of the page and positioning
 function resize(){
