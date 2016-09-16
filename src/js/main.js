@@ -125,9 +125,10 @@ $(function(){
 
         //looping through the R G and B values to the end RGB
         for(var i = 1;i < 3;i++){
-            difference = end(i) - start(i);
+            difference = end[i] - start[i];
             //making sure that the step is
-            difference = (end(i) - start(i)) / steps;
+            difference = (end[i] - start[i]);
+                // steps;
             for(var i = 1; i < steps; i++ ){
 
             }
