@@ -112,8 +112,10 @@ $(function(){
     //step is equal to the
     function colorFade(startColour,endColour,steps){
         var difference;
-        var loopDifference;
+        var loopStep;
         var currentColor;
+        var currentStep = {};
+        var Difference = {};
         var start=  {RGB:      startColour,
                      R:        ParseInt(startColour.slice(1,3),16),
                      G:        ParseInt(startColour.slice(3,5),16),
@@ -122,16 +124,12 @@ $(function(){
                      R:        ParseInt(endColour.slice(1,3),16),
                      G:        ParseInt(endColour.slice(3,5),16),
                      B:        ParseInt(endColour.slice(5,7),16)}
+        //geting all of the diffrerences between the R G and B
+        Difference["R"] = end["R"] - start["R"];
+        Difference["G"] = end["G"] - start["G"];
+        Difference["B"] = end["B"] - start["B"];
+        for(var i = 0; i < steps; i++){
 
-        //looping through the R G and B values to the end RGB
-        for(var i = 1;i < 3;i++){
-            difference = end[i] - start[i];
-            //making sure that the step is
-            difference = (end[i] - start[i]);
-                // steps;
-            for(var i = 1; i < steps; i++ ){
-
-            }
         }
         //todo for loop to go from the start colour to the end color.
         var timer = new setTimeout(function(){
